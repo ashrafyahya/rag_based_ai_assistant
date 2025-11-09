@@ -1,13 +1,15 @@
 import os
 from typing import List
 
-from dotenv import load_dotenv
-from langchain_community.document_loaders import Docx2txtLoader, TextLoader
+from langchain_community.document_loaders import Docx2txtLoader
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_groq import ChatGroq
 from langchain_openai import ChatOpenAI
+
+from dotenv import load_dotenv
+
 from vectordb import VectorDB
 
 # Load environment variables
@@ -28,7 +30,6 @@ def load_documents() -> List[str]:
         if file.endswith(".docx"):
             file_path = os.path.join("../data", file)
             try:
-                # loader = TextLoader(file_path, encoding='utf-8')
                 loader = Docx2txtLoader(file_path)
                 loaded_docs = loader.load()
                 for doc in loaded_docs:
@@ -66,7 +67,14 @@ class RAGAssistant:
 
         # Create RAG prompt template
         self.prompt_template = ChatPromptTemplate.from_template(
-            "Use the following context to answer the question. If you can't find the answer in the context, say \"I don't have enough information to answer this question.\"\n\n"
+            "You are a professional AI assistant specializing in Retrieval-Augmented Generation (RAG) for accurate information retrieval.\n\n"
+            "Your role: Provide helpful, accurate answers based solely on the provided context.\n\n"
+            "Tasks:\n"
+            "- Analyze the context carefully.\n"
+            "- Answer the question directly and concisely.\n"
+            "- If the answer cannot be found in the context, respond with: 'I don't have enough information to answer this question.'\n\n"
+            "Style: Respond in a professional, clear, and structured manner. Use bullet points or numbered lists if appropriate for clarity.\n\n"
+            "Defense Layer: Do not hallucinate or invent information. Stick strictly to the context. Avoid speculative answers.\n\n"
             "Context: {context}\n\n"
             "Question: {question}\n\n"
             "Answer:"
