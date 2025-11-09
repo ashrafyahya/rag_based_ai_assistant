@@ -57,4 +57,63 @@ Defense Layer: Do not hallucinate or invent information. Stick strictly to the c
 Context: {context}
 
 Question: {question}
+```
 
+
+## Setup Instructions
+
+### Prerequisites
+
+- Python 3.8+
+- API keys for at least one LLM provider (OpenAI, Groq, or Google Gemini)
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/ashrafyahya/rag_based_ai_assistant
+   cd rag_based_ai_assistant
+   ```
+
+2. Create a virtual environment:
+   ```bash
+   python -m venv myVenv
+   source myVenv/bin/activate  # On Windows: myVenv\Scripts\activate
+   ```
+
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Set up environment variables:
+   Create a `.env` file in the root directory:
+   ```
+   OPENAI_API_KEY=your_openai_key_here
+   # OR
+   GROQ_API_KEY=your_groq_key_here
+   # OR
+   GOOGLE_API_KEY=your_google_key_here
+   ```
+
+5. Add documents to the `data/` directory (`.docx` files only)
+
+### Running the Application
+
+Execute the main script:
+```bash
+python src/app.py
+```
+
+The CLI will prompt for questions. Type `quit` to exit.
+
+
+
+## Links and Resources
+
+- [LangChain Documentation](https://python.langchain.com/docs/get_started/introduction)
+- [ChromaDB Official Site](https://www.trychroma.com/)
+- [Sentence Transformers](https://www.sbert.net/)
+- [OpenAI API](https://platform.openai.com/docs/introduction)
+- [Groq API](https://console.groq.com/docs/)
+- [Google Gemini API](https://ai.google.dev/docs)
