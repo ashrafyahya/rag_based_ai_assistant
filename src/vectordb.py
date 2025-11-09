@@ -40,7 +40,7 @@ class VectorDB:
 
         print(f"Vector database initialized with collection: {self.collection_name}")
 
-    def chunk_text(self, text: str, chunk_size: int = 500) -> List[str]:
+    def chunk_text(self, text: str, chunk_size: int = 500, doc_index: int = 0) -> List[str]:
         """
         Simple text chunking by splitting on spaces and grouping into chunks.
 
@@ -64,7 +64,8 @@ class VectorDB:
             chunk_data.append({
                 "content": chunk,
                 "metadata": {"chunk_index": i},
-                "chunk_id": f"chunk_{i}",
+                "chunk_id": f"doc_{doc_index}_chunk_{i}"
+,
             })
         return chunk_data
 
@@ -80,16 +81,23 @@ class VectorDB:
         Args:
             documents: List of documents
         """
-        # TODO: Implement document ingestion logic
-        # HINT: Loop through each document in the documents list
-        # HINT: Extract 'content' and 'metadata' from each document dict
-        # HINT: Use self.chunk_text() to split each document into chunks
-        # HINT: Create unique IDs for each chunk (e.g., "doc_0_chunk_0")
-        # HINT: Use self.embedding_model.encode() to create embeddings for all chunks
-        # HINT: Store the embeddings, documents, metadata, and IDs in your vector database
-        # HINT: Print progress messages to inform the user
-
+        # Print progress messages to inform the user
         print(f"Processing {len(documents)} documents...")
+        
+        for doc_index, doc in enumerate(documents):
+            chunked_docs = self.chunk_text(doc["content"], doc_index=doc_index)
+            texts = [chunk["content"] for chunk in chunked_docs]
+            embeddings = self.embedding_model.encode(texts)
+            metadatas = [chunk["metadata"] for chunk in chunked_docs]
+            ids = [chunk["chunk_id"] for chunk in chunked_docs]
+            self.collection.add(
+                documents=texts,
+                embeddings=embeddings.tolist(),
+                metadatas=metadatas,
+                ids=ids,
+            )
+            print(f"Added document with {len(texts)} chunks to vector database")
+        
         # Your implementation here
         print("Documents added to vector database")
 
