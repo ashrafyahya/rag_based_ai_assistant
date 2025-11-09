@@ -112,17 +112,21 @@ class VectorDB:
         Returns:
             Dictionary containing search results with keys: 'documents', 'metadatas', 'distances', 'ids'
         """
-        # TODO: Implement similarity search logic
-        # HINT: Use self.embedding_model.encode([query]) to create query embedding
-        # HINT: Convert the embedding to appropriate format for your vector database
-        # HINT: Use your vector database's search/query method with the query embedding and n_results
-        # HINT: Return a dictionary with keys: 'documents', 'metadatas', 'distances', 'ids'
-        # HINT: Handle the case where results might be empty
-
-        # Your implementation here
-        return {
+        query_embedding = self.embedding_model.encode([query])
+        results = self.collection.query(
+            query_embeddings=query_embedding.tolist(),
+            n_results=n_results,
+            include=["documents", "metadatas", "distances", "ids"],
+        )
+        if results["documents"]:
+            print(f"Found {len(results['documents'][0])} similar documents")
+            return results
+        else:
+            print("No similar documents found")
+            return {
             "documents": [],
             "metadatas": [],
             "distances": [],
             "ids": [],
         }
+        
