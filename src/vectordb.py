@@ -2,6 +2,7 @@ import os
 import chromadb
 from typing import List, Dict, Any
 from sentence_transformers import SentenceTransformer
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
 class VectorDB:
@@ -50,23 +51,22 @@ class VectorDB:
         Returns:
             List of text chunks
         """
-        # TODO: Implement text chunking logic
-        # You have several options for chunking text - choose one or experiment with multiple:
-        #
-        # OPTION 1: Simple word-based splitting
-        #   - Split text by spaces and group words into chunks of ~chunk_size characters
-        #   - Keep track of current chunk length and start new chunks when needed
-        #
-        # OPTION 2: Use LangChain's RecursiveCharacterTextSplitter
-        #   - from langchain_text_splitters import RecursiveCharacterTextSplitter
-        #   - Automatically handles sentence boundaries and preserves context better
-        #
-        # OPTION 3: Semantic splitting (advanced)
-        #   - Split by sentences using nltk or spacy
-        #   - Group semantically related sentences together
-        #   - Consider paragraph boundaries and document structure
-        #
-        # Feel free to try different approaches and see what works best!
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=chunk_size,
+            chunk_overlap=50,
+            separators=["\n\n", "\n", " ", ""],
+        )
+        chunks = text_splitter.split_text(text)
+        
+        # Adding metadata to each chunk
+        chunk_data = []
+        for i, chunk in enumerate(chunks):
+            chunk_data.append({
+                "content": chunk,
+                "metadata": {"chunk_index": i},
+                "chunk_id": f"chunk_{i}",
+            })
+        return chunk_data
 
         chunks = []
         # Your implementation here
