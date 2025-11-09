@@ -7,6 +7,8 @@ from vectordb import VectorDB
 from langchain_openai import ChatOpenAI
 from langchain_groq import ChatGroq
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_community.document_loaders import TextLoader
+
 
 # Load environment variables
 load_dotenv()
@@ -20,12 +22,25 @@ def load_documents() -> List[str]:
         List of sample documents
     """
     results = []
-    # TODO: Implement document loading
-    # HINT: Read the documents from the data directory
-    # HINT: Return a list of documents
-    # HINT: Your implementation depends on the type of documents you are using (.txt, .pdf, etc.)
-
-    # Your implementation here
+    
+    # Loading data from the 'data' directory
+    for file in os.listdir("data"):
+        if file.endswith(".docx"):
+            file_path = os.path.join("data", file)
+            try:
+                loader = TextLoader(file_path, encoding='utf-8')
+                loaded_docs = loader.load()
+                for doc in loaded_docs:
+                    results.append({
+                        'content': doc.page_content,
+                        'metadata': doc.metadata
+                    })
+                print(f"Successfully loaded: {file}")
+            except Exception as e:
+                print(f"Error loading {file_path}: {e}")
+                
+    print(f"Loaded {len(results)} documents from the data directory")
+    
     return results
 
 
