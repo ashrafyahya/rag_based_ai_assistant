@@ -59,16 +59,16 @@ class VectorDB:
         chunks = text_splitter.split_text(text)
         
         # Adding metadata to each chunk
-        chunk = []
+        chunk_data = []
         for i, chunk in enumerate(chunks):
-            chunk.append({
+            chunk_data.append({
                 "content": chunk,
                 "metadata": {"chunk_index": i},
                 "chunk_id": f"doc_{doc_index}_chunk_{i}"
 ,
             })
             
-        return chunk
+        return chunk_data
 
 
     def add_documents(self, documents: List) -> None:
