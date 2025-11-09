@@ -130,14 +130,17 @@ class RAGAssistant:
         Returns:
             Dictionary containing the answer and retrieved context
         """
-        llm_answer = ""
-        # TODO: Implement the RAG query pipeline
-        # HINT: Use self.vector_db.search() to retrieve relevant context chunks
-        # HINT: Combine the retrieved document chunks into a single context string
-        # HINT: Use self.chain.invoke() with context and question to generate the response
-        # HINT: Return a string answer from the LLM
-
-        # Your implementation here
+        # Retrieve relevant context chunks
+        context_chunks = self.vector_db.search(input, n_results=n_results)
+        
+        # Combine the retrieved document chunks into a single context string
+        context = "\n\n".join([chunk['content'] for chunk in context_chunks])
+        
+        llm_answer = self.chain.invoke({
+        "context": context,
+        "question": input
+    })
+        
         return llm_answer
 
 
