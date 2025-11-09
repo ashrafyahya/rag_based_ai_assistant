@@ -116,8 +116,22 @@ class VectorDB:
         results = self.collection.query(
             query_embeddings=query_embedding.tolist(),
             n_results=n_results,
-            include=["documents", "metadatas", "distances", "ids"],
+            include=["documents", "metadatas", "distances"],
         )
+        # Get all documents to map content to IDs
+        all_docs = self.collection.get(include=["documents", "metadatas"])
+        
+        # Create a mapping from content to ID
+        content_to_id = {}
+        for idx, content in enumerate(all_docs["documents"]):
+            content_to_id[content] = all_docs["ids"][idx]
+
+        # Get IDs for the returned documents
+        returned_ids = []
+        for doc in results["documents"][0]:
+            returned_ids.append(content_to_id[doc])
+
+        
         if results["documents"]:
             print(f"Found {len(results['documents'][0])} similar documents")
             return results
@@ -127,6 +141,6 @@ class VectorDB:
             "documents": [],
             "metadatas": [],
             "distances": [],
-            "ids": [],
+            "ids": []
         }
         
