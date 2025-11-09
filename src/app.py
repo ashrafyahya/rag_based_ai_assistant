@@ -64,11 +64,12 @@ class RAGAssistant:
         self.vector_db = VectorDB()
 
         # Create RAG prompt template
-        # TODO: Implement your RAG prompt template
-        # HINT: Use ChatPromptTemplate.from_template() with a template string
-        # HINT: Your template should include placeholders for {context} and {question}
-        # HINT: Design your prompt to effectively use retrieved context to answer questions
-        self.prompt_template = None  # Your implementation here
+        self.prompt_template = ChatPromptTemplate.from_template(
+            "Use the following context to answer the question. If you can't find the answer in the context, say \"I don't have enough information to answer this question.\"\n\n"
+            "Context: {context}\n\n"
+            "Question: {question}\n\n"
+            "Answer:"
+        )
 
         # Create the chain
         self.chain = self.prompt_template | self.llm | StrOutputParser()
